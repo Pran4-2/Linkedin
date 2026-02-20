@@ -1,0 +1,123 @@
+# ─────────────────────────────────────────────
+#  LinkedIn Easy Apply Bot – Configuration File
+# ─────────────────────────────────────────────
+
+# ── LinkedIn Credentials ──────────────────────
+linkedin:
+  email: "your_email@example.com"
+  password: "your_password"
+
+# ── Job Search Settings ───────────────────────
+search:
+  job_titles:
+    - "SOC Analyst"
+    - "Incident Response"
+    - "Security Operations Center Analyst"
+  locations:
+    - "Bangalore"
+  keywords:
+    - "SIEM"
+    - "threat detection"
+    - "incident response"
+    - "cybersecurity"
+  easy_apply_only: true
+  # Experience level filters: Internship, Entry level, Associate, Mid-Senior level, Director, Executive
+  experience_levels:
+    - "Entry level"
+    - "Associate"
+    - "Mid-Senior level"
+  # Date posted: past_24_hours, past_week, past_month, any_time
+  date_posted: "past_month"
+  # Maximum applications per session (safety guard)
+  max_applications: 50
+
+# ── Personal Details (used to fill Easy Apply forms) ─
+personal:
+  first_name: "Your First Name"
+  last_name: "Your Last Name"
+  email: "your_email@example.com"
+  phone: "+91 9999999999"
+  phone_country_code: "India (+91)"
+  city: "Bangalore"
+  state: "Karnataka"
+  country: "India"
+  linkedin_profile: "https://www.linkedin.com/in/yourprofile"
+  portfolio_url: ""
+  github_url: ""
+
+# ── Documents ─────────────────────────────────
+documents:
+  # Absolute or relative paths to your CV and cover letter PDFs
+  cv_path: "documents/CV.pdf"
+  cover_letter_path: "documents/CoverLetter.pdf"
+
+# ── Work Eligibility ──────────────────────────
+eligibility:
+  legally_authorized: true        # Are you legally authorized to work?
+  require_sponsorship: false      # Will you now or in the future require sponsorship?
+  us_citizen: false
+  eu_citizen: false
+
+# ── Professional Background ───────────────────
+background:
+  years_of_experience: 2
+  highest_education: "Bachelor's Degree"
+  degree_field: "Computer Science"
+  current_company: "Unemployed"
+  current_title: "Security Analyst"
+  notice_period_days: 0
+  expected_salary: "600000"       # Annual CTC in local currency
+  currency: "INR"
+
+# ── Common Screening Question Answers ─────────
+answers:
+  # Simple yes/no questions (keys are lowercase fragments of the question)
+  yes_no:
+    "authorized to work": true
+    "require sponsorship": false
+    "willing to relocate": true
+    "remote work": true
+    "background check": true
+    "drug test": true
+    "18 years": true
+    "full time": true
+    "overtime": true
+
+  # Numeric / short-answer questions
+  numeric:
+    "years of experience": 2
+    "gpa": 3.8
+    "notice period": 0
+
+  # STAR-method answers for behavioral questions (stored as compact strings)
+  star_answers:
+    "tell me about yourself": >
+      I am a cybersecurity professional with hands-on experience in security monitoring,
+      threat detection, and incident response. I am proficient with SIEM platforms,
+      log analysis, and working in SOC environments. I am passionate about protecting
+      digital assets and continuously improving security posture.
+    "describe a challenge": >
+      Situation: During a live incident, we detected a lateral-movement pattern in
+      the SIEM at 2 AM. Task: I was the on-call analyst responsible for triage.
+      Action: I isolated affected endpoints, correlated logs across five data sources,
+      and escalated to Tier-3 within 20 minutes. Result: The attack was contained
+      before reaching critical servers, with zero data exfiltration confirmed.
+    "why this company": >
+      Your company has a strong reputation for cutting-edge security operations
+      and a culture of continuous learning, which aligns perfectly with my goal of
+      growing as a SOC analyst and contributing to real-world threat mitigation.
+    "weakness": >
+      I sometimes over-document findings; however I have learned to balance
+      thoroughness with speed by using standardised templates and time-boxing
+      my reports.
+
+# ── Logging ───────────────────────────────────
+logging:
+  csv_path: "Applications.csv"
+  log_file: "bot.log"
+
+# ── Browser Settings ──────────────────────────
+browser:
+  headless: false       # Set true to run without a visible browser window
+  slow_mo_ms: 500       # Milliseconds between actions (helps avoid detection)
+  implicitly_wait: 10   # Seconds to wait for elements
