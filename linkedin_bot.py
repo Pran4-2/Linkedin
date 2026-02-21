@@ -214,7 +214,9 @@ class LinkedInBot:
             self.driver.execute_script(
                 "arguments[0].scrollIntoView({block: 'center'});", easy_apply_btn
             )
-            time.sleep(0.5)
+            WebDriverWait(self.driver, 5).until(
+                EC.element_to_be_clickable(easy_apply_btn)
+            )
             easy_apply_btn.click()
 
             # Wait for the Easy Apply modal to appear

@@ -87,8 +87,9 @@ class TestFindEasyApplyButton:
 class TestApplyToJob:
     """Tests for _apply_to_job: detail pane wait, button click, modal wait."""
 
+    @patch("linkedin_bot.WebDriverWait")
     @patch("linkedin_bot.FormFiller")
-    def test_successful_application(self, mock_filler_cls, bot, tmp_path):
+    def test_successful_application(self, mock_filler_cls, mock_wdw, bot, tmp_path):
         bot.csv_path = str(tmp_path / "apps.csv")
 
         card = MagicMock()
@@ -97,6 +98,9 @@ class TestApplyToJob:
 
         # Wait for detail pane succeeds
         bot.wait.until.return_value = MagicMock()
+
+        # WebDriverWait for element_to_be_clickable after scroll
+        mock_wdw.return_value.until.return_value = mock_btn
 
         # _find_easy_apply_button returns a button
         with patch.object(bot, "_find_easy_apply_button", return_value=mock_btn):
@@ -130,8 +134,9 @@ class TestApplyToJob:
         assert result is False
         assert bot.applications_this_session == 0
 
+    @patch("linkedin_bot.WebDriverWait")
     @patch("linkedin_bot.FormFiller")
-    def test_modal_timeout_returns_false(self, mock_filler_cls, bot):
+    def test_modal_timeout_returns_false(self, mock_filler_cls, mock_wdw, bot):
         card = MagicMock()
         mock_btn = MagicMock()
         mock_btn.is_displayed.return_value = True
@@ -139,20 +144,25 @@ class TestApplyToJob:
         # First wait (detail pane) succeeds, second wait (modal) times out
         bot.wait.until.side_effect = [MagicMock(), TimeoutException()]
 
+        # WebDriverWait for element_to_be_clickable after scroll succeeds
+        mock_wdw.return_value.until.return_value = mock_btn
+
         with patch.object(bot, "_find_easy_apply_button", return_value=mock_btn):
             result = bot._apply_to_job(card, "SOC Analyst", "Acme Corp")
 
         assert result is False
         mock_filler_cls.assert_not_called()
 
+    @patch("linkedin_bot.WebDriverWait")
     @patch("linkedin_bot.FormFiller")
-    def test_form_fill_failure_returns_false(self, mock_filler_cls, bot, tmp_path):
+    def test_form_fill_failure_returns_false(self, mock_filler_cls, mock_wdw, bot, tmp_path):
         bot.csv_path = str(tmp_path / "apps.csv")
         card = MagicMock()
         mock_btn = MagicMock()
         mock_btn.is_displayed.return_value = True
 
         bot.wait.until.return_value = MagicMock()
+        mock_wdw.return_value.until.return_value = mock_btn
 
         with patch.object(bot, "_find_easy_apply_button", return_value=mock_btn):
             mock_filler_cls.return_value.fill_application.return_value = False
