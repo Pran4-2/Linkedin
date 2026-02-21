@@ -222,7 +222,7 @@ class FormFiller:
         return False
 
     def _try_next(self) -> bool:
-        for text in ("Next", "Continue", "Review"):
+        for text in ("Next", "Continue"):
             try:
                 btn = self.driver.find_element(By.XPATH, f"//button[contains(., '{text}')]")
                 if btn.is_displayed() and btn.is_enabled():

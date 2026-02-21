@@ -192,16 +192,43 @@ class LinkedInBot:
                 card.find_element(By.CSS_SELECTOR, "a, .job-card-list__title").click()
             except NoSuchElementException:
                 card.click()
-            time.sleep(2)
+
+            # Wait for the job detail pane to load
+            try:
+                self.wait.until(
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, ".jobs-details, .job-view-layout, .jobs-unified-top-card")
+                    )
+                )
+            except TimeoutException:
+                logger.info("Job detail pane did not load for: %s @ %s", title, company)
+                return False
 
             # Look for Easy Apply button in the job detail pane
             easy_apply_btn = self._find_easy_apply_button()
             if not easy_apply_btn:
-                logger.debug("No Easy Apply button for: %s @ %s", title, company)
+                logger.info("No Easy Apply button for: %s @ %s", title, company)
                 return False
 
+            # Scroll to and click the Easy Apply button
+            self.driver.execute_script(
+                "arguments[0].scrollIntoView({block: 'center'});", easy_apply_btn
+            )
+            WebDriverWait(self.driver, 5).until(
+                EC.element_to_be_clickable(easy_apply_btn)
+            )
             easy_apply_btn.click()
-            time.sleep(2)
+
+            # Wait for the Easy Apply modal to appear
+            try:
+                self.wait.until(
+                    EC.presence_of_element_located(
+                        (By.CLASS_NAME, "jobs-easy-apply-modal")
+                    )
+                )
+            except TimeoutException:
+                logger.info("Easy Apply modal did not open for: %s @ %s", title, company)
+                return False
 
             # Fill the form
             filler = FormFiller(self.driver, self.config)
@@ -242,14 +269,17 @@ class LinkedInBot:
         """Return the Easy Apply button element if present, else None."""
         selectors = [
             "//button[contains(@class,'jobs-apply-button') and contains(.,'Easy Apply')]",
+            "//button[contains(@class,'jobs-apply-button')]",
             "//button[contains(.,'Easy Apply')]",
         ]
         for xpath in selectors:
             try:
-                btn = self.driver.find_element(By.XPATH, xpath)
+                btn = WebDriverWait(self.driver, 5).until(
+                    EC.element_to_be_clickable((By.XPATH, xpath))
+                )
                 if btn.is_displayed():
                     return btn
-            except NoSuchElementException:
+            except (TimeoutException, NoSuchElementException):
                 continue
         return None
 
